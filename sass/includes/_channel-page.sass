@@ -1,0 +1,94 @@
+$_theme: () !default
+
+@use "sass:map"
+@use "_dimensions" as dimensions
+@use "video-list-item" as *
+
+.channel-page
+  padding: 40px 20px 20px
+  max-width: 900px
+  margin: 0 auto
+
+.banner
+  display: flex
+
+.banner-image
+  width: 100%
+  height: auto
+  border-radius: 8px
+  align-self: flex-start
+
+.channel-data
+  background-color: map.get($_theme, "bg-1")
+  padding: 24px
+  margin: 12px 0px 24px
+  border-radius: 8px
+
+  .info
+    display: flex
+    flex-wrap: wrap
+
+    +dimensions.thin
+      display: block
+
+    .thumbnail-image
+      $size: 120px
+
+      width: $size
+      height: $size
+      border-radius: 50%
+      margin-right: 24px
+
+    .about
+      flex: 1
+      margin-top: 10px
+
+      .name
+        font-size: 30px
+        font-weight: normal
+        color: map.get($_theme, "fg-bright")
+        margin: 0
+
+      .subscribers
+        color: map.get($_theme, "fg-main")
+        font-size: 18px
+
+    .subscribe-form
+      margin-top: 24px
+
+      .subscribe-button
+        $padding: 14px
+
+        padding: $padding - 2px $padding $padding
+        line-height: 1
+        border-radius: 8px
+        font-size: 22px
+        background-color: map.get($_theme, "power-deep")
+        color: map.get($_theme, "power-fg")
+        border: none
+
+  .description
+    margin-top: 16px
+    overflow-wrap: break-word
+
+.channel-video
+  @include channel-video
+
+.channel-error
+  background-color: map.get($_theme, "bg-1")
+  padding: 24px
+  margin: 12px 0px 24px
+  border-radius: 8px
+  border: 1px solid map.get($_theme, "edge-grey")
+  font-size: 20px
+  color: map.get($_theme, "fg-warning")
+
+.you-should-unsubscribe
+  margin-top: 20px
+  color: map.get($_theme, "fg-main")
+
+.about-description // class provided by youtube
+  pre
+    font-size: inherit
+    font-family: inherit
+    white-space: pre-wrap

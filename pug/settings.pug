@@ -1,0 +1,140 @@
+extends includes/layout.pug
+
+mixin fieldset(name)
+  fieldset
+    legend= name
+    .fieldset-contents
+      block
+
+mixin input({id, label, description, type, placeholder, disabled, list})
+  - disabled = disabled || false
+  .field-row
+    label.field-row__label(for=id)= label
+    input(type=(type) id=id name=id value=settings[id] placeholder=placeholder disabled=disabled list=`${id}-list`).border-look.field-row__input
+    if list
+      datalist(id=`${id}-list`)
+        each item in list
+          option(value=item)
+    if description
+      .field-row__description!= description
+
+mixin select({id, label, description, disabled, options})
+  - disabled = disabled || false
+  .field-row
+    label.field-row__label(for=id)= label
+    select(id=id name=id disabled=disabled).border-look.field-row__input
+      each option in options
+        option(value=option.value selected=(option.value == settings[id]))= option.text
+    if description
+      .field-row__description!= description
+
+block head
+  title Settings - CloudTube
+
+block content
+  main.settings-page
+    form(method="post" action="/settings")
+      +fieldset("Settings")
+
+        +select({
+          id: "theme",
+          label: "Theme",
+          options: [
+            {value: "0", text: "Standard dark"},
+            {value: "1", text: "Standard light"},
+            {value: "2", text: "Edgeless light"}
+          ]
+        })
+
+        +input({
+          id: "instance",
+          label: "Instance",
+          description: 'CloudTube will fetch information from this <a href="https://invidious.io/">Invidious</a> or <a href="https://git.sr.ht/~cadence/NewLeaf">NewLeaf</a> instance.',
+          type: "url",
+          placeholder: constants.user_settings.instance.default,
+          list: instances
+        })
+
+        +select({
+          id: "local",
+          label: "Play videos on",
+          description: 'If CloudTube, the instance above will be used.\nIf YouTube, you will be redirected there.\nIf local, CloudTube will try to connect to a NewLeaf/Invidious instance running on your own computer. This can bypass blocks, but requires you to run the instance software.\nIf you wish to use local mode, <a href="https://git.sr.ht/~cadence/tube-docs/tree/main/item/docs/newleaf/Installing%20NewLeaf.md">read how to install NewLeaf.</a>',
+          options: [
+            {value: "0", text: "CloudTube"},
+            {value: "2", text: "YouTube"},
+            {value: "1", text: "Local"},
+          ]
+        })
+
+        +select({
+          id: "quality",
+          label: "Preferred qualities",
+          description: "All qualities are available on the watch page. This defines their sort order.",
+          options: [
+            {value: "0", text: "720p"},
+            {value: "4", text: "360p"},
+            {value: "1", text: "Best possible"},
+            {value: "2", text: "Best <=1080p"},
+            {value: "3", text: "Best <=30fps"}
+          ]
+        })
+
+        +select({
+          id: "save_history",
+          label: "Watched videos history",
+          description: "Watched videos will appear in a dimmer colour.\nTurning this off will delete your existing watch history.",
+          options: [
+            {value: "0", text: "Don't store"},
+            {value: "1", text: "Store on server"}
+          ]
+        })
+
+        +select({
+          id: "recommended_mode",
+          label: "Recommended videos",
+          description: 'Videos are recommended by YouTube to make people waste time.\nYou can take back some control by moving them below, or hiding them entirely.\nFor precise filtering of specific content, <a href="/filters">open the filter editor.</a>',
+          options: [
+            {value: "0", text: "Sidebar"},
+            {value: "1", text: "Below"},
+            {value: "2", text: "Hidden"}
+          ]
+        })
+
+      .save-settings
+        button.border-look Save
+
+    h2.more-settings-header More settings
+
+    section.more-settings
+      ul.more-settings__list
+        li.more-settings__list-item: a(href="/filters") Edit filters
+
+    if user.token
+      details.data-management
+        summary Sync data
+        p Open this link elsewhere to import your current CloudTube session there.
+        p.
+          If you clear your cookies often, you can bookmark this link and open it
+          to restore your data, or if you have multiple devices, you can send this
+          link to them to import your session and automatically keep everything
+          in sync.
+        - let url = `/formapi/importsession/${user.token}`
+        a(href=url)= url
+
+      details.data-management.delete-details
+        summary Delete data
+        p Press this button to erase all your data from CloudTube.
+        p.
+          Just the current session will be removed. If you lost access to a
+          previous session, you cannot touch it.
+        p.
+          You will lose your subscriptions, watch history, settings, and anything
+          else you stored on the server. The server will keep no record that they
+          ever existed.
+        p Deletion is instant and #[em cannot be undone.]
+        input(type="checkbox" id="delete-confirm")
+        .delete-confirm-container
+          label(for="delete-confirm").delete-confirm-label I understand the consequences
+        form(method="post" action="/formapi/erase")
+          input(type="hidden" name="token" value=user.token)
+          button.border-look#delete-button Permanently erase my data

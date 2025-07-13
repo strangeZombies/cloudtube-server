@@ -1,0 +1,58 @@
+$_theme: () !default
+
+@use "sass:map"
+@use "buttons" as *
+@use "_dimensions" as dimensions
+
+.main-nav
+  background-color: map.get($_theme, "bg-nav")
+  display: flex
+  padding: 8px
+  border-bottom: 1px solid map.get($_theme, "edge-grey")
+
+  +dimensions.thin
+    display: block
+
+  .links
+    display: flex
+
+    +dimensions.thin
+      margin-bottom: 4px
+      padding: 1px
+
+  .link
+    @include button-base
+    text-decoration: none
+    margin: 1px 8px 1px 0px
+    font-size: 20px
+    display: flex
+    align-items: center
+
+    &.home
+      font-weight: bold
+
+    &, &:visited
+      color: map.get($_theme, "fg-bright")
+
+    &:focus, &:hover
+      background-color: map.get($_theme, "bg-4")
+
+    &.icon-link
+      color: map.get($_theme, "fg-dim")
+
+      &:hover, &:focus
+        color: map.get($_theme, "fg-bright")
+
+  .search-form
+    display: flex
+    flex: 1
+    align-items: center
+
+    .search
+      @include button-bg
+      padding: 10px
+      flex: 1
+      border: 1px solid map.get($_theme, "bg-nav")
+
+      &:hover, &:focus
+        border-color: map.get($_theme, "edge-grey")

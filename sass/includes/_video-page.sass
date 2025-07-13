@@ -1,0 +1,199 @@
+$_theme: () !default
+
+@use "sass:map"
+@use "video-list-item" as *
+
+.video-page
+  display: grid
+  grid-auto-flow: row
+
+  @media screen and (min-width: 1000px)
+    grid-template-columns: 1fr 400px
+
+  &--recommended-below, &--recommended-hidden
+    grid-template-columns: none
+
+  &--recommended-side
+    .related-videos
+      border-left: 1px solid map.get($_theme, "edge-grey")
+      padding-left: 12px
+      padding-right: 20px
+      background-color: map.get($_theme, "bg-4")
+      padding-top: 12px
+
+  &--recommended-below
+    .related-videos
+      padding: 20px
+
+  &--recommended-hidden
+    .related-videos
+      display: none
+
+.main-video-section
+  padding: 20px
+
+  .video-container
+    text-align: center
+
+    .video
+      display: inline-block
+      width: 100%
+      height: auto
+      max-height: 80vh
+
+  .stream-notice
+    background: map.get($_theme, "bg-0")
+    padding: 4px
+
+  .info
+    display: flex
+    margin: 8px 4px 16px
+    font-size: 17px
+
+    @media screen and (max-width: 499px)
+      display: block
+
+    .info-main
+      flex: 1
+
+      .title
+        margin: 0px 0px 4px
+        font-size: 30px
+        font-weight: normal
+        color: map.get($_theme, "fg-bright")
+        word-break: break-word
+
+      .author-link
+        color: map.get($_theme, "fg-main")
+        text-decoration: none
+
+        &:hover, &:active
+          color: map.get($_theme, "fg-bright")
+          text-decoration: underline
+
+    .info-secondary
+      display: flex
+      flex-direction: column
+      align-items: flex-end
+      text-align: right
+      margin-top: 6px
+      margin-left: 6px
+
+      @media screen and (max-width: 499px)
+        align-items: flex-start
+        margin-left: 0px
+
+  .continuous
+    display: flex
+    align-items: center
+    justify-content: space-between
+    margin: 16px 4px
+    padding: 12px
+    border-radius: 4px
+    background-color: map.get($_theme, "bg-0")
+
+    &__description
+      margin-left: 12px
+
+    &__title
+      font-size: 20px
+
+    &__script-warning
+      font-size: 15px
+      color: map.get($_theme, "fg-warning")
+
+    &__buttons
+      display: flex
+      flex-shrink: 0
+
+  .description
+    position: relative
+    font-size: 17px
+    line-height: 1.4
+    word-break: break-word
+    margin: 16px 4px 4px 4px
+    background-color: map.get($_theme, "bg-5")
+    padding: 12px
+    border-radius: 4px
+
+    --regular-background: #{map.get($_theme, "bg-5")}
+    --highlight-background: #{map.get($_theme, "bg-1")}
+
+.subscribe-form
+  display: inline-block
+
+.related-cols
+  display: flex
+  align-items: center
+  justify-content: space-between
+  margin-bottom: 8px
+
+.continuous-start
+  font-size: 15px
+
+.related-header
+  margin: 4px 0px 4px 2px
+  font-weight: normal
+  font-size: 26px
+
+.related-video
+  @include video-list-item
+  word-break: break-word
+
+.video-error-page
+  padding: 40px 20px 20px
+  margin: 0 auto
+  max-width: 600px
+  line-height: 1.4
+
+.blocked-explanation
+  text-align: center
+  margin-bottom: 32px
+
+  @media screen and (max-width: 600px)
+    display: none
+
+  img
+    width: 552px
+    height: 96px
+
+  .rows
+    display: grid
+    grid-template-columns: 22% 20% 20% 20%
+    grid-gap: 4%
+    justify-content: center
+
+    .row
+      margin: 0
+
+      .actor
+        margin: 4px 0px 10px
+
+.takedown-footer
+  margin-top: 80px
+
+// Chapter highlights
+
+.timestamp--active
+  margin: 4px 0px
+  display: inline-block
+
+  &::after
+    display: block
+    position: absolute
+    left: 0
+    right: 0
+    height: calc(1.4em + 4px)
+    transform: translateY(-1.4em) translateY(-4px)
+
+    padding-right: 6px
+    text-align: right
+    content: "⮜"
+    line-height: 1.6
+    color: #fff
+
+    border: solid black
+    border-width: 2px 0px
+
+.fetch-status
+  white-space: pre-wrap

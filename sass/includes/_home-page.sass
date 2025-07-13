@@ -1,0 +1,41 @@
+$_theme: () !default
+
+@use "sass:map"
+
+.home-page
+  padding: 40px
+
+.top-header
+  font-size: 48px
+  text-align: center
+
+.tagline
+  font-size: 30px
+  text-align: center
+
+.encouraging-message
+  max-width: max-content
+  margin: 0 auto 60px
+  text-align: center
+  padding: 16px
+  border-radius: 4px
+  font-size: 20px
+  background-color: map.get($_theme, "bg-1")
+  color: map.get($_theme, "fg-main")
+
+  p
+    margin: 0 32px
+
+    &:not(:last-child)
+      margin-bottom: 0.6em
+
+    &:not(:first-child)
+      margin-top: 0.6em
+
+.encouraging-search-form
+  display: flex
+
+  .search
+    margin-top: 16px
+    flex: 1
+    font-size: 18px

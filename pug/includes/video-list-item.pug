@@ -1,0 +1,36 @@
+mixin video_list_item(className, video, instanceOrigin, options = {})
+  div(class={[className]: true, "video-list-item--watched": video.watched})
+    - let link = `/watch?v=${video.videoId}`
+    if options.continuous
+      - link += `&continuous=1&session-watched=${sessionWatchedNext}`
+    div.thumbnail
+      a(href=link tabindex="-1").thumbnail__link
+        img(src=`/vi/${video.videoId}/mqdefault.jpg` width=320 height=180 alt="").image
+      if video.second__lengthText != undefined
+        span.duration= video.second__lengthText
+      details.thumbnail__more
+        summary.thumbnail__show-more ×
+        .thumbnail__options-container
+          .thumbnail__options-list
+            - const paramsBase = {}
+            - if (url) paramsBase.referrer = url.pathname + url.search
+            a(href=`/filters?${new URLSearchParams({"channel-id": video.authorId, label: video.author, ...paramsBase})}`).menu-look Hide this channel
+            a(href=`/filters?${new URLSearchParams({title: video.title, ...paramsBase})}`).menu-look Hide by title
+            a(href="/filters").menu-look Edit all filters
+    .info
+      div.title: a(href=link).title-link= video.title
+      div.author-line
+        a(href=`/channel/${video.authorId}`).author= video.author
+        - const views = video.viewCountText || video.second__viewCountText
+        if views
+          = ` • `
+          span.views= views
+        if video.publishedText
+          = ` • `
+          span.published= video.publishedText
+        if options.showMarkWatched
+          form(method="post" action=`/formapi/markwatched/${video.videoId}`).mark-watched
+            = ` • `
+            button.mark-watched__button Mark watched
+      if video.descriptionHtml
+        div.description!= video.descriptionHtml

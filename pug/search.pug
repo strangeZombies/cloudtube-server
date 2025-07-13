@@ -1,0 +1,11 @@
+extends includes/layout.pug
+
+include includes/video-list-item.pug
+
+block head
+  title= `${query} (search) - CloudTube`
+
+block content
+  main.search-page
+    each result in results
+      +video_list_item("search-result", result, instanceOrigin)

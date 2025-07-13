@@ -1,0 +1,23 @@
+{
+  "name": "cloudtube",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "better-sqlite3": "^9.5.0",
+    "cookie": "^1.0.2",
+    "denque": "^1.5.1",
+    "mixin-deep": "^2.0.1",
+    "node-fetch": "^2.6.6",
+    "pinski": "git+https://git.sr.ht/~cadence/nodejs-pinski#9653807f309aee34c8c63ce4e6ee760cccbfdf0d"
+  },
+  "devDependencies": {
+    "cli-progress": "^3.12.0"
+  }
+}

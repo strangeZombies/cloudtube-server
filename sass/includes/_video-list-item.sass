@@ -1,0 +1,207 @@
+$_theme: () !default
+
+@use "sass:map"
+@use "_dimensions" as dimensions
+
+// navigator hacks
+.thumbnail > .thumbnail__options-container
+  float: right
+
+.thumbnail
+  $more-size: 24px
+
+  &__more
+    position: absolute
+    top: 4px
+    right: 4px
+    width: $more-size
+    height: $more-size
+    border-radius: 50%
+    background-color: rgba(20, 20, 20, 0.85)
+    padding: 0px
+    color: #fff
+
+    visibility: hidden
+
+    @at-root .thumbnail:hover &, body.show-focus &
+      visibility: visible
+
+    &[open]
+      visibility: visible
+
+  &__show-more
+    display: block
+    height: $more-size
+    color: #fff
+    line-height: 16px
+    font-size: 25px
+    text-align: center
+
+    &::-webkit-details-marker
+      display: none
+
+  // "&__more" is needed for navigator hacks
+  &__more &__options-container
+    position: absolute
+    z-index: 1
+    top: $more-size
+    left: -1000px
+    right: 0
+    padding-top: 4px
+    display: flex
+    justify-content: flex-end
+    pointer-events: none
+
+  &__options-list
+    pointer-events: auto
+    display: grid
+    background-color: map.get($_theme, "bg-3")
+    padding: 8px 0px
+    border-radius: 8px
+    box-shadow: 0 2px 6px 2px #000
+
+    &::before
+      content: ""
+      display: block
+      height: 12px
+      width: 12px
+      position: absolute
+      top: 0
+      right: 0
+      transform: translate(-6px, -1px) rotate(-45deg)
+      clip-path: polygon(-5% -20%, 120% -20%, 120% 125%)
+      background-color: map.get($_theme, "bg-3")
+      box-shadow: 0px 0px 4px 0px #000
+      pointer-events: none
+
+@mixin video-list-item
+  display: grid
+  grid-template-columns: 160px 1fr
+  grid-gap: 8px
+  align-items: start
+  align-content: start
+  margin-bottom: 12px
+
+  @at-root .video-list-item--watched#{&}
+    background: map.get($_theme, "bg-dim")
+    padding: 4px 4px 0px
+    margin: -4px -4px 8px
+
+    .thumbnail
+      margin-bottom: 4px
+
+    .image
+      opacity: 0.4
+
+  .thumbnail
+    position: relative
+    display: flex
+    background: map.get($_theme, "bg-0")
+
+    &__link
+      font-size: 0 // remove whitespace around the image
+
+  .image
+    width: 160px
+    height: 90px
+
+  .duration
+    position: absolute
+    bottom: 3px
+    right: 3px
+    color: #fff
+    font-size: 14px
+    background: rgba(20, 20, 20, 0.85)
+    line-height: 1
+    padding: 3px 5px 4px
+    border-radius: 4px
+    pointer-events: none
+
+  .title
+    font-size: 15px
+    line-height: 1.2
+
+  .title-link
+    color: map.get($_theme, "fg-main")
+    text-decoration: none
+
+  .author-line
+    margin-top: 4px
+    font-size: 15px
+    color: map.get($_theme, "fg-dim")
+
+  .author
+    color: map.get($_theme, "fg-dim")
+    text-decoration: none
+
+    &:hover, &:active
+      color: map.get($_theme, "fg-bright")
+      text-decoration: underline
+
+@mixin recommendation-item
+  @include video-list-item
+
+@mixin large-item
+  @include video-list-item
+
+  .title
+    font-size: 17px
+
+  +dimensions.wide
+    grid-gap: 16px
+    grid-template-columns: auto 1fr
+    margin-bottom: 20px
+    max-height: 150px
+
+    @at-root .video-list-item--watched#{&}
+      padding: 8px 8px 0px
+      margin: -8px -8px 20px
+
+      .thumbnail
+        margin-bottom: 8px
+
+    .image
+      width: 240px
+      height: 135px
+
+    .duration
+      font-size: 17px
+      padding: 4px 5px
+      right: 5px
+      bottom: 5px
+
+    .info
+      overflow: hidden
+      max-height: 150px
+
+    .title
+      font-size: 24px
+
+    .author-line
+      font-size: 15px
+      color: map.get($_theme, "fg-main")
+
+    .author
+      color: map.get($_theme, "fg-main")
+
+    .description
+      margin-top: 16px
+      font-size: 15px
+      color: map.get($_theme, "fg-dim")
+
+  +dimensions.thin
+    .description
+      display: none
+
+@mixin search-result
+  @include large-item
+
+  .description b
+    font-weight: normal
+    color: map.get($_theme, "fg-main")
+
+@mixin channel-video
+  @include large-item
+
+@mixin subscriptions-video
+  @include large-item

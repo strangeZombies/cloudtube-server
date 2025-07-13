@@ -1,0 +1,84 @@
+$_theme: () !default
+
+@use "sass:selector"
+@use "sass:map"
+
+@mixin button-base
+  -webkit-appearance: none
+  -moz-appearance: none
+  color: map.get($_theme, "fg-bright")
+  border: none
+  border-radius: 4px
+  padding: 8px
+  margin: 0
+  text-decoration: none
+  line-height: 1.25
+
+  @at-root #{selector.unify(&, "select")}
+    padding: 8px 27px 8px 8px
+    background: map.get($_theme, "image-dropdown") right 53% no-repeat map.get($_theme, "bg-4")
+
+  @at-root #{selector.unify(&, "a")}
+    padding: 7px 8px
+
+  @at-root #{selector.unify(&, "button")}
+    cursor: pointer
+
+  .button-icon
+    position: relative
+    top: 3px
+    margin-right: 8px
+    margin-left: 2px
+
+@mixin button-bg
+  @include button-base
+
+  background-color: map.get($_theme, "bg-4")
+
+@mixin border-button
+  @include button-bg
+
+  border: 1px solid map.get($_theme, "edge-grey")
+
+@mixin button-size
+  margin: 4px
+  font-size: 16px
+
+@mixin button-hover
+  &:hover
+    background-color: map.get($_theme, "bg-3")
+
+  &:active
+    background-color: map.get($_theme, "bg-2")
+
+.base-border-look
+  @include border-button
+
+.border-look
+  @include border-button
+  @include button-size
+  @at-root #{selector.unify(&, "a, button")}
+    @include button-hover
+
+.menu-look
+  @include button-size
+  -webkit-appearance: none
+  -moz-appearance: none
+  color: map.get($_theme, "fg-bright")
+  text-decoration: none
+  line-height: 1.25
+  margin: 0
+  padding: 8px 20px
+  background: map.get($_theme, "bg-3")
+  border: solid map.get($_theme, "edge-grey")
+  border-width: 1px 0px 0px
+  text-align: left
+
+  &:last-child
+    border-width: 1px 0px 1px
+
+  &:hover
+    background: map.get($_theme, "bg-4")
+
+  &:active
+    background: map.get($_theme, "bg-1")

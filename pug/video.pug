@@ -1,0 +1,116 @@
+extends includes/layout
+
+include includes/video-list-item
+include includes/subscribe-button
+
+block head
+  unless error
+    title= `${video.title} - CloudTube`
+  else
+    title Error - CloudTube
+  script(type="module" src=getStaticURL("html", "/static/js/player.js"))
+  script(type="module" src=getStaticURL("html", "/static/js/chapter-highlight.js"))
+  script const data = !{JSON.stringify({...video, continuous})}
+
+block content
+  unless error
+    if continuous
+      - const first = video.recommendedVideos[0]
+      if first
+        script(type="module" src=getStaticURL("html", "/static/js/continuous.js"))
+        noscript
+          meta(http-equiv="refresh" content=`${video.lengthSeconds+5};url=/watch?v=${first.videoId}&continuous=1&session-watched=${sessionWatchedNext}`)
+    .video-page(class={
+      "video-page--recommended-side": settings.recommended_mode === 0,
+      "video-page--recommended-below": settings.recommended_mode === 1,
+      "video-page--recommended-hidden": settings.recommended_mode === 2
+    })
+      main.main-video-section
+        .video-container
+          - const format = formats[0]
+          if format
+            video(controls preload="auto" width=format.second__width height=format.second__height data-itag=format.itag autoplay=continuous||autoplay)#video.video
+              - const proxyUrl = `/proxy?url=${encodeURIComponent(format.url)}`
+              source(src=proxyUrl type=format.type)
+              each t in video.captions
+                track(label=t.label kind="subtitles" srclang=t.languageCode src=t.url)
+              // fallback: flash player
+              - let flashvars = new URLSearchParams({skin: "/static/flash/skin.swf", video: proxyUrl})
+              embed(type="application/x-shockwave-flash" src="/static/flash/player.swf" id="f4Player" width=1280 height=720 flashvars=flashvars.toString() allowscriptaccess="always" allowfullscreen="true" bgcolor="#000000")
+          else
+            video(src="")#video.video
+            .stream-notice The server provided no playback streams.
+
+        #current-time-container
+        #end-cards-container
+        .info
+          header.info-main
+            h1.title= video.title
+            .author
+              a(href=`/channel/${video.authorId}`).author-link= `Uploaded by ${video.author}`
+          .info-secondary
+            - const date = new Date(video.published*1000)
+            - const month = new Intl.DateTimeFormat("en-US", {month: "short"}).format(date.getTime())
+            div= `Uploaded ${date.getUTCDate()} ${month} ${date.getUTCFullYear()}`
+            div= video.second__viewCountText
+
+        audio(preload="auto")#audio
+        #live-event-notice
+        #audio-loading-display
+
+        if continuous
+          div#continuous-controls.continuous
+            .continuous__description
+              .continuous__title Continuous mode: next video autoplays
+              noscript
+                .continuous__script-warning Without JavaScript, it will trigger on a timer, not on video completion.
+            .continuous__buttons
+              a(href=`/watch?v=${video.videoId}`)#continuous-stop.border-look Turn off
+
+        .button-container
+          +subscribe_button(video.authorId, subscribed, `/watch?v=${video.videoId}`).border-look
+          //- button.border-look#theatre Theatre
+          select(aria-label="Quality" autocomplete="off").border-look#quality-select
+            each f in formats
+              option(value=f.itag)= f.cloudtube__label
+          //-
+            a(href="/subscriptions").border-look
+              img(src="/static/images/search.svg" width=17 height=17 alt="").button-icon
+              | Search
+          //- button.border-look#share Share
+          a(href=`https://www.youtube.com/watch?v=${video.videoId}#cloudtube`).border-look YouTube
+          a(href=`https://redirect.invidious.io/watch?v=${video.videoId}`).border-look Invidious
+
+        .description#description!= video.descriptionHtml
+
+      //- Standard view
+      aside(style=continuous ? "display: none" : "")#standard-related-videos.related-videos
+        .related-cols
+          h2.related-header Related videos
+          if video.recommendedVideos.length
+            .continuous-start
+                a(href=`/watch?v=${video.videoId}&continuous=1` nofollow) Continuous mode
+        each r in video.recommendedVideos
+          +video_list_item("related-video", r, instanceOrigin)
+
+      //- Continuous view
+      if continuous
+        aside.related-videos#continuous-related-videos
+          - let column = video.recommendedVideos.filter(v => !sessionWatched.includes(v.videoId))
+          if column.length
+            .related-cols
+              h2.related-header Autoplay next
+            #continuous-first
+              +video_list_item("related-video", column.shift(), instanceOrigin, {continuous: true})
+          if column.length
+            .related-cols
+              h2.related-header Related videos
+            each r in column
+              +video_list_item("related-video", r, instanceOrigin, {continuous: true}) // keep on continuous mode for all recommendations
+
+  else
+    //- error
+    main.video-error-page
+      h2 Error
+      != message
+      p: a(href=`https://www.youtube.com/watch?v=${video.videoId}#cloudtube`) Watch on YouTube →

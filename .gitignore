@@ -1,0 +1,17 @@
+# Editor crud files
+*~
+\#*#
+.#*
+.vscode
+.idea
+
+# Auto-generated files
+node_modules
+
+# User configuration
+/db
+/config/config.js
+
+# Narration
+/html/static/media/cant_think_suricrasia_online.mp3
+/html/transparency

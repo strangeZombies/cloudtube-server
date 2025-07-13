@@ -1,0 +1,153 @@
+$_theme: () !default
+
+@use "sass:map"
+
+@mixin disabled
+  background-color: map.get($_theme, "bg-2")
+  color: #808080
+
+fieldset
+  border: none
+  padding: 55px 0px 0px 0px
+  position: relative
+
+  @media screen and (max-width: 400px)
+    padding-top: 70px
+
+  legend
+    position: absolute
+    top: 5px
+    left: 0px
+    width: 100%
+    font-size: 28px
+    font-weight: bold
+    padding: 0
+    border-bottom: 1px solid map.get($_theme, "edge-grey") // TODO: originally contrasted more
+    line-height: 1.56
+
+    @media screen and (max-width: 400px)
+      margin-top: 15px
+
+
+.field-row
+  line-height: 1
+  display: grid
+  grid-template-areas: "label input" "description description"
+  align-items: center
+  justify-content: space-between
+  position: relative
+  padding-bottom: 5px
+  margin-bottom: 5px
+  border-bottom: 1px solid map.get($_theme, "edge-grey")
+
+  @media screen and (max-width: 400px)
+    flex-direction: column
+    align-items: start
+    padding-bottom: 15px
+
+  &.max-width-input
+    grid-template-columns: auto 1fr
+
+    .field-row__input
+      justify-self: stretch
+
+  &__label
+    grid-area: label
+    padding: 8px 8px 8px 0px
+    color: map.get($_theme, "fg-main")
+
+  &__input
+    grid-area: input
+    justify-self: end
+
+  &__description
+    grid-area: description
+    white-space: pre-line
+    margin: 12px 0px 18px
+    font-size: 16px
+    color: map.get($_theme, "fg-dim")
+    line-height: 1.2
+
+//
+  .checkbox-row
+    .pill
+      display: flex
+      align-items: center
+      user-select: none
+
+    .fake-checkbox
+      -webkit-appearance: none
+      background-color: white
+      width: 16px
+      height: 16px
+      padding: 0px
+      border: 1px solid map.get($_theme, "edge-grey")
+      border-radius: 3px
+      margin-left: 8px
+      position: relative
+      outline: none
+
+    .checkbox
+      display: none
+
+      &:checked + .pill .fake-checkbox
+        background: center center / contain url(/static/img/tick.svg)
+
+      &:disabled + .pill
+        @include disabled
+
+        .fake-checkbox
+          @include disabled
+
+      &.checkbox:not(:disabled) + .pill
+        @include acts-like-button
+        cursor: pointer
+
+.checkbox-hider__container
+  position: relative
+  display: grid // why does the default not work???
+  top: -42px
+  background: map.get($_theme, "bg-3")
+  line-height: 1
+  border: 1px solid map.get($_theme, "edge-grey")
+  border-radius: 8px
+  margin-bottom: -18px
+
+.checkbox-hider__label
+  padding: 12px 0px 12px 32px
+  cursor: pointer
+
+@mixin checkbox-hider($base)
+  ##{$base}
+    position: relative
+    left: 10px
+    display: block
+    z-index: 1
+    height: 42px
+    margin: 0
+
+  /*
+    automatically add these styles too
+    this means that components based off this can either add the .checkbox-hider__container class, or they can add the .base-name-container class,
+    depending on which one is more reasonable in the moment
+    for example, .delete-confirm-container takes advantage of the @extend here.
+
+  .#{$base}-container
+    @extend .checkbox-hider__container
+
+  .#{$base}-label
+    @extend .checkbox-hider__label
+
+@mixin single-button-form
+  display: inline-block
+  white-space: pre-wrap // preserve whitespace inside the form at the edge
+
+  > button
+    background: none
+    padding: 0
+    margin: 0
+    border: none
+    color: inherit
+    font-family: inherit
+    font-size: inherit
+    text-decoration: underline
